@@ -21,6 +21,17 @@ white-space: normal; */
 		#loadMore{
 			top:18px;
 		}
+		#content2{
+/* 			background: url(themes/images/ajax-loader.gif) no-repeat center center fixed; 
+		  -webkit-background-size: cover;
+		  -moz-background-size: cover;
+		  -o-background-size: cover;
+		  background-size: cover; */
+		}
+		#content2 img, #content2 object{
+			max-width: 100%;
+			max-height: 100%;
+		}
 	</style>
 
 	<script type="text/javascript">
@@ -33,10 +44,29 @@ white-space: normal; */
 			populateData();
 		});
 
+		$(document).on('tap','.hubThumb',function(){
+			showImagePg($(this));
+		});
+
+		function showImagePg(obj){
+			var o = hData[$(obj).attr('id')];
+			$('#imgTitle').html(o.t);
+			var tmp = o.i.replace('-thumb','').replace('.jpg','').replace('.gif','');
+			var imgSrc = hrImg1 + tmp + hrImg2;
+			$('#imgInfo').html(o.t);
+			$('#content2').html('<img src="themes/images/ajax-loader.gif" />');
+			//$('#content2').css('background-image', 'url(themes/images/ajax-loader.gif)');
+			$("<img/>").attr("src", imgSrc).load(function(){
+				//$('#content2').css('background-image', 'url(' + imgSrc + ')');
+				$('#content2').html('<img src="'+imgSrc+'" />');
+			});
+			$.mobile.navigate("#imgPage", { transition: "slide" });
+		}
+
 		function populateData(){
 			var s = "";
 			for(var i=start;i<end;i++){
-				s += '<li><a href="#" class="hubThumb"><img src="themes/images/hubbleThumbs/'+hData[i].i+'" /><h5>'+hData[i].t+'</h5></a></li>'
+				s += '<li><a href="#" class="hubThumb" id="'+i+'"><img src="themes/images/hubbleThumbs/'+hData[i].i+'" /><h5>'+hData[i].t+'</h5></a></li>'
 			}
 			start = end+1;
 			end = end + 25;
@@ -66,6 +96,22 @@ white-space: normal; */
 				<p>All images and associated data are from <a href='http://www.nasa.gov/'>Nasa</a></p>
 				<p>Created By: <a href="http://www.rushis.com">Rushi</a><p>
 		</div>		
+	</div>
+
+	<!-- Start of second page -->
+	<div data-role="page" id="imgPage" class="cstmPage">
+		<div data-role="header" data-position="fixed">
+			<a href="#" data-rel="back" data-icon="arrow-l" data-role="button" data-theme="a" data-transition="slideUp" data-iconpos="notext">Back</a>
+			<a href="#popupImageInfo" data-position-to="window" data-transition="fade" data-rel="popup" id="infoicon" data-icon="info" class="ui-btn-right" data-iconpos="notext">Info</a>
+			<h1 id="imgTitle"></h1>
+		</div>
+		<div data-role="content" id="content2">
+			
+		</div>
+		<div data-role="popup" id="popupImageInfo" data-overlay-theme="a" class="ui-content" >
+	    	<a href="#" data-rel="back" data-role="button" data-theme="c" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+	    	<p id='imgInfo'></p>
+		</div>
 	</div>
 </body>
 </html>
